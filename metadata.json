@@ -1,0 +1,10 @@
+{
+  "name": "Boerenomgevingsplannenkaart Steenwijkerland",
+  "description": "Retroactieve detectie, kwantificering en visualisatie van kadastrale percelen in Gemeente Steenwijkerland waarvan de agrarische bestemming is omgezet onder de Wro (IMRO) en Omgevingswet (STOP/TPOD).",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
