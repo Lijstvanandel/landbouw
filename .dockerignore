@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.git
+.aistudio
+*.shp
+*.csv
+*.html
+NS.png
+QBUZZ*.png
+RRREIS*.png
+bicycle_parking_open.png
+geocoded_schools.json

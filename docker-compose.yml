@@ -1,0 +1,11 @@
+services:
+  steenwijkerland-conversies:
+    build: .
+    container_name: agrarische-conversies-steenwijkerland
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3130
+    ports:
+      # Bind op localhost:3130 voor Nginx/Caddy reverse proxy (of gebruik "3130:3130" voor directe toegang)
+      - "127.0.0.1:3130:3130"

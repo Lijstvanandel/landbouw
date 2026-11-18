@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createServer as createViteServer } from 'vite';
 import {
   isPointInSteenwijkerland,
   findClosestKern,
@@ -57,7 +57,20 @@ let lastPipelineRunTimestamp = new Date().toISOString();
 
 async function startServer() {
   const app = express();
+  app.set('trust proxy', 1);
   app.use(express.json({ limit: '5mb' }));
+
+  // 0. Healthcheck endpoint voor PM2 / Docker / Nginx / Uptime monitoring
+  app.get('/api/health', (_req, res) => {
+    res.json({
+      status: 'ok',
+      port: PORT,
+      environment: isProduction ? 'production' : 'development',
+      conversiesCount: conversiesStore.size,
+      gebouwenCount: gebouwenStore.size,
+      lastRun: lastPipelineRunTimestamp,
+    });
+  });
 
   // 1. Get all validated Agrarische Perceelconversies (Grond), Bouwvlakken_t1, Gebouwconversies (Indicatoren 1-4) & Slivers
   app.get('/api/conversies', (_req, res) => {
@@ -467,6 +480,7 @@ async function startServer() {
   });
 
   if (!isProduction) {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -474,7 +488,7 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(__dirname, 'dist');
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { maxAge: '1h' }));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
